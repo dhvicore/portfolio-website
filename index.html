@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhvani Tandel | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --primary: #ffafbd;
+            --secondary: #ffc3a0;
+            --accent: #6c5ce7;
+            --glass: rgba(255, 255, 255, 0.25);
+            --text: #2d3436;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .circle {
+            position: fixed; z-index: -1; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            filter: blur(80px); opacity: 0.4; animation: float 10s infinite alternate;
+        }
+        .c1 { width: 400px; height: 400px; top: -100px; right: -100px; }
+        .c2 { width: 350px; height: 350px; bottom: -50px; left: -50px; background: #a29bfe; }
+
+        @keyframes float { from { transform: translate(0,0); } to { transform: translate(40px, 60px); } }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+
+        header { text-align: center; padding: 4rem 1rem; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 3.8rem; color: var(--text); margin-bottom: 0.5rem; }
+        .subtitle { font-weight: 300; letter-spacing: 2px; text-transform: uppercase; color: #636e72; font-size: 0.9rem; }
+
+        .card {
+            position: relative;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(31, 38, 135, 0.08); }
+
+        .card-shadow-pulse {
+            transform: scale(0.97) translateY(0px) !important;
+            box-shadow: 0 0 30px rgba(108, 92, 231, 0.3), 
+                        0 20px 60px rgba(108, 92, 231, 0.15) !important;
+        }
+
+        h2 { margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; color: var(--accent); }
+
+        .about-text { font-size: 1.05rem; color: #444; }
+        .highlight { color: var(--accent); font-weight: 600; }
+
+        .role-item { margin-bottom: 2rem; position: relative; padding-left: 1.5rem; border-left: 2px solid var(--accent); }
+        .role-title { font-weight: 600; color: var(--text); font-size: 1.1rem; }
+        .role-org { color: var(--accent); font-size: 0.9rem; font-style: italic; margin-bottom: 5px; }
+        .role-desc { font-size: 0.95rem; color: #555; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem; }
+        .tag {
+            background: white; padding: 6px 16px; border-radius: 25px;
+            font-size: 0.85rem; border: 1px solid var(--primary);
+            transition: 0.3s;
+        }
+        .tag:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+
+        .project-item { margin-bottom: 1.8rem; border-left: 4px solid var(--primary); padding-left: 1.2rem; }
+        
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .contact-link { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .contact-link:hover { color: var(--accent); transform: translateX(5px); }
+
+        footer { text-align: center; padding: 3rem; font-size: 0.85rem; color: #888; }
+
+    </style>
+</head>
+<body>
+
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+
+    <div class="container">
+        <header class="animate__animated animate__fadeIn">
+            <h1>Dhvani Tandel</h1>
+            <p class="subtitle">MBA + B.Tech Computer Engineering • 2029</p>
+        </header>
+
+        <section class="card animate__animated animate__fadeInUp" onclick="handleCardClick(this)">
+            <h2><i data-lucide="user"></i> About Me</h2>
+            <div class="about-text">
+                <p>Curious problem-solver bridging complex engineering with creative ideation. I'm a second-year <span class="highlight">MBA + B.Tech Computer Engineering</span> student at NMIMS with a deep interest in the synergy between technology and digital media. I thrive in collaborative leadership and creating innovative concepts.</p>
+            </div>
+            <div class="tags">
+                <span class="tag">Problem Solver</span>
+                <span class="tag">Digital Creator</span>
+                <span class="tag">Leader</span>
+                <span class="tag">Tech Strategist</span>
+            </div>
+        </section>
+
+        <section class="card animate__animated animate__fadeInUp" onclick="handleCardClick(this)">
+            <h2><i data-lucide="award"></i> Positions of Responsibility</h2>
+            <div class="role-item">
+                <div class="role-title">Head of Creatives</div>
+                <div class="role-org">C’est La Vie, JML</div>
+                <p class="role-desc">Managed creative and decor department, delegation, direction, and budgeting.</p>
+            </div>
+            <div class="role-item">
+                <div class="role-title">Subhead, Digital Media and Creatives</div>
+                <div class="role-org">IEEE CS MPSTME Student Chapter</div>
+                <p class="role-desc">Handled creative departments and delivered technical presentations.</p>
+            </div>
+            <div class="role-item">
+                <div class="role-title">Executive + Subhead, Digital Creatives</div>
+                <div class="role-org">Editorial Board MPSTME (Student Council)</div>
+                <p class="role-desc">Organized 'Blind Date with a Book' and Rahasya; managed open mics.</p>
+            </div>
+            <div class="role-item">
+                <div class="role-title">Executive</div>
+                <div class="role-org">Sattva (College Cultural Fest)</div>
+                <p class="role-desc">Coordinated performing arts events and ensured smooth execution.</p>
+            </div>
+        </section>
+
+        <section class="card animate__animated animate__fadeInUp" onclick="handleCardClick(this)">
+            <h2><i data-lucide="cpu"></i> Tech Stack </h2>
+            <div class="tags">
+                <span class="tag">Python</span><span class="tag">C++</span><span class="tag">Java</span>
+                <span class="tag">React JS</span><span class="tag">JavaScript</span><span class="tag">R Programming</span>
+                <span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">Matplotlib</span>
+                <span class="tag">AutoCAD</span><span class="tag">GitHub</span><span class="tag">Excel</span>
+            </div>
+        </section>
+
+        <section class="card animate__animated animate__fadeInUp" onclick="handleCardClick(this)">
+            <h2><i data-lucide="code"></i> Projects</h2>
+            <div class="project-item">
+                <h3>VOTAMATIC: Electronic Voting Machine</h3>
+                <p>Secure voting model with a live real-time dashboard.</p>
+            </div>
+            <div class="project-item">
+                <h3>Ultrasonic Packet Feedback</h3>
+                <p>Sensor-based obstacle detection system for navigation.</p>
+            </div>
+            <div class="project-item">
+                <h3>Laser Home Security</h3>
+                <p>Motion-triggered alert system using laser interruptions.</p>
+            </div>
+        </section>
+
+        <section class="card animate__animated animate__fadeInUp" onclick="handleCardClick(this)">
+            <h2><i data-lucide="mail"></i> Contact & Info</h2>
+            <div class="contact-grid">
+                <a href="mailto:dhvanitandel7@gmail.com" class="contact-link"><i data-lucide="at-sign"></i> Email Dhvani</a>
+                <a href="https://github.com/dhvicore" target="_blank" class="contact-link"><i data-lucide="github"></i> github.com/dhvicore</a>
+                <div class="contact-link"><i data-lucide="map-pin"></i> Mumbai, Maharashtra</div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Dhvani Tandel </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function handleCardClick(card) {
+            card.classList.add('card-shadow-pulse');
+            setTimeout(() => card.classList.remove('card-shadow-pulse'), 500);
+        }
+    </script>
+</body>
+</html>
