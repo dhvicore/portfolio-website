@@ -75,10 +75,15 @@ body.reduced-motion .dock>button{transform:none!important}
 @media(max-width:390px){.dock{gap:5px}.dock .app-icon{width:31px;height:31px}.dock .app-icon>.mac-icon{width:36px;height:36px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 .desktop-trash,.restored-note{z-index:4}
-/* Give magnified dock icons room to breathe on desktop. */
+/* Compact macOS spacing; magnification reserves space for neighboring icons. */
 @media(min-width:801px){
- .dock{gap:16px;padding:10px 17px 14px;border-radius:21px}
- .dock .app-icon{width:48px;height:48px}
- .dock i{margin:0 4px}
- .dock .tooltip{bottom:68px}
+ .dock{gap:10px;padding:9px 14px 13px;border-radius:19px}
+ .dock>button{display:grid;place-items:center;width:calc(44px * var(--dock-scale,1));transition:width .15s ease-out,transform .15s ease-out;transform:translateY(var(--dock-lift,0px))}
+ .dock>button:hover,.dock>button:focus-visible{transform:translateY(var(--dock-lift,-4px))}
+ .dock .app-icon{width:44px;height:44px;transform:scale(var(--dock-scale,1));transform-origin:center bottom;transition:transform .15s ease-out}
+ .dock .app-icon>.mac-icon{width:44px;height:44px}
+ .dock i{margin:0 3px;height:35px}
+ .dock .tooltip{bottom:63px}
+ body.reduced-motion .dock>button{width:44px}
+ body.reduced-motion .dock .app-icon{transform:none}
 }

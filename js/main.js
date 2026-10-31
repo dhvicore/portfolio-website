@@ -95,7 +95,7 @@ function toggleMaximize(){
 const dock=document.querySelector('.dock');
 dock.addEventListener('pointermove',e=>{
  if(!motionAllowed()||e.pointerType==='touch')return;
- dock.querySelectorAll(':scope > button').forEach(button=>{const r=button.getBoundingClientRect(),distance=Math.abs(e.clientX-r.left-r.width/2),amount=Math.max(0,1-distance/110);button.style.setProperty('--dock-scale',1+amount*.45);button.style.setProperty('--dock-lift',`${amount*-12}px`);});
+ dock.querySelectorAll(':scope > button').forEach(button=>{const r=button.getBoundingClientRect(),distance=Math.abs(e.clientX-r.left-r.width/2),amount=Math.max(0,1-distance/110);button.style.setProperty('--dock-scale',1+amount*.35);button.style.setProperty('--dock-lift',`${amount*-12}px`);});
 });
 dock.addEventListener('pointerleave',()=>dock.querySelectorAll(':scope > button').forEach(b=>{b.style.removeProperty('--dock-scale');b.style.removeProperty('--dock-lift');}));
 document.addEventListener('click',e=>{
