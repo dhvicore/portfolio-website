@@ -77,7 +77,7 @@ body.reduced-motion .dock>button{transform:none!important}
 .desktop-trash,.restored-note{z-index:4}
 /* Compact macOS spacing; magnification reserves space for neighboring icons. */
 @media(min-width:801px){
- .dock{gap:10px;padding:9px 14px 13px;border-radius:19px}
+ .dock{gap:8px;padding:9px 14px 13px;border-radius:19px}
  .dock>button{display:grid;place-items:center;width:calc(44px * var(--dock-scale,1));transition:width .15s ease-out,transform .15s ease-out;transform:translateY(var(--dock-lift,0px))}
  .dock>button:hover,.dock>button:focus-visible{transform:translateY(var(--dock-lift,-4px))}
  .dock .app-icon{width:44px;height:44px;transform:scale(var(--dock-scale,1));transform-origin:center bottom;transition:transform .15s ease-out}
