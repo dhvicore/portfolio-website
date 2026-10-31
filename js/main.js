@@ -35,7 +35,7 @@ const projects=[
 const skills={'Languages':['Python','C++','Java','Kotlin','TypeScript','JavaScript','R','HTML/CSS'],'Web & mobile':['React','Next.js','Node.js','Express','Flask','React Flow','Jetpack Compose','Material 3'],'Databases & backend':['SQLite','SQL','Firebase','Prisma'],'Computer vision & AI':['OpenCV','MediaPipe','YOLO','Ollama','Gemma 3','MiniLM','sentence-transformers'],'Data & visualization':['Pandas','NumPy','Matplotlib','Excel'],'Tools & APIs':['Android Studio','GitHub','AutoCAD','Google Cloud API','TomTom APIs'],'Creative & professional':['Digital content creation','Editing','Creative ideation','Event planning','Communication','Teamwork','Leadership']};
 const roles=[['Joint Secretary · formerly Subhead, Digital Media & Creatives','IEEE Computer Society, MPSTME Student Chapter','Creative department work and technical presentations, alongside student chapter leadership.'],['Subhead, Digital Media','IEEE MPSTME Student Chapter','Creative department contributions, social media, and editing.'],['Executive + Subhead, Digital Creatives','Editorial Board, MPSTME Student Council','Helped plan and organize Blind Date with a Book, Rahasya, and The Editorial Project, featuring open mic and creative showcases.'],['Head of Creatives','C’est La Vie, Jasudben M.L. School','Managed creative direction and decor, task assignment, and budgeting.'],['Executive','Sattva · college cultural fest','Helped organize a performing arts event.']];
 const certificates=[['Develop with Python for AI and Machine Learning','LinkedIn Learning'],['Deep Learning with TensorFlow: Insights and Innovations','LinkedIn Learning'],['AI Agents for Cybersecurity','LinkedIn Learning'],['When to Use AI (and When Not To): Practical Judgment at Work','LinkedIn Learning'],['RAG Systems & Agentic Workflows with Pinecone and LangGraph','Board Infinity · via Coursera'],['Active Listening for Better Leadership Communication','LinkedIn Learning']];
-const pages={home:'Start here',about:'About me',projects:'My projects',skills:'Skills & tools',leadership:'Beyond the code',resume:'Resume',contact:'Let’s connect'};
+const pages={home:'Start here',about:'About me',projects:'My projects',skills:'Skills & tools',leadership:'Beyond the code',resume:'Resume',contact:'Let’s connect',trash:'Trash'};
 const content=document.getElementById('content');const win=document.getElementById('main-window');let currentPage='home';let projectFilter='All';
 const pills=items=>`<div class="pills">${items.map(s=>`<span class="pill">${s}</span>`).join('')}</div>`;
 const title=(eyebrow,heading,subtitle)=>`<p class="eyebrow">${eyebrow}</p><h1 class="page-title">${heading}</h1><p class="page-subtitle">${subtitle}</p>`;
@@ -47,15 +47,140 @@ function skillsPage(){return title('MY TOOLBOX','A growing set of tools.','The l
 function leadership(){return title('BEYOND THE CODE','A creative streak. A team spirit.','Student communities, creative work, and the small details that make an event memorable.')+roles.map(([role,org,desc])=>`<section class="info-section"><h3>${role}</h3><div class="meta">${org}</div><p>${desc}</p></section>`).join('')+`<h2 class="page-title" style="font-size:25px;margin-bottom:22px">Always learning.</h2>`+certificates.map(([name,provider])=>`<section class="info-section"><h3>${name}</h3><div class="meta">${provider}</div></section>`).join('');}
 function resume(){return title('THE ACTUAL PDF','My resume, right here.','Read the original document, open it in a new tab, or save a copy for later.')+`<div class="resume-toolbar"><p>Dhvani Tandel · PDF document</p><div class="actions" style="margin:0"><a class="btn" href="${RESUME}" target="_blank" rel="noopener">Open PDF ↗</a><a class="btn primary" href="${RESUME}" download="Dhvani-Tandel-Resume.pdf">Download ↓</a></div></div><object class="resume-preview" data="${RESUME}" type="application/pdf" aria-label="Dhvani Tandel resume"><p class="prose">Your browser can open the resume in a separate tab. <a href="${RESUME}" target="_blank" rel="noopener">Open the PDF</a> or use the download button above.</p></object>`;}
 function contact(){return title('A NEW CONVERSATION','Good things start with hello.','Have a project in mind, an interesting opportunity, or a shared curiosity? I’d love to hear from you.')+`<div class="contact-card">${icon('mail')}<a href="mailto:${EMAIL}" style="text-decoration:none"><b>Send me an email</b><small>${EMAIL}</small></a><button class="copy-btn" id="copy-email">Copy</button></div><a class="contact-card" href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">${icon('linkedin')}<div><b>Connect on LinkedIn</b><small>Dhvani Tandel</small></div><span class="arrow">↗</span></a><a class="contact-card" href="${GITHUB}" target="_blank" rel="noopener noreferrer">${icon('github')}<div><b>Explore my GitHub</b><small>@dhvicore · repositories & experiments</small></div><span class="arrow">↗</span></a><p class="contact-foot">Based in Mumbai, India.<br>Interested in technology, digital media, and creative problem solving.</p>`;}
-const renderers={home,about,projects:projectList,skills:skillsPage,leadership,resume,contact};
-function render(page,projectId){if(!pages[page])page='home';currentPage=page;win.classList.remove('hidden');const project=page==='projects'&&projects.find(p=>p.id===projectId);content.innerHTML=project?detail(project):renderers[page]();document.getElementById('window-title').textContent=project?`${project.name} — My projects`:page==='home'?'Welcome to my desktop':pages[page];document.getElementById('breadcrumb').textContent=`Dhvani’s MacBook / ${pages[page]}${project?' / '+project.name:''}`;document.querySelectorAll('[data-page]').forEach(e=>{e.classList.toggle('active',e.dataset.page===page);if(e.closest('.sidebar'))e.setAttribute('aria-current',e.dataset.page===page?'page':'false');});content.scrollTop=0;}
-function navigate(page,projectId){const hash=page==='projects'&&projectId?`projects/${projectId}`:page;if(location.hash.slice(1)===hash)render(page,projectId);else location.hash=hash;}
+const renderers={home,about,projects:projectList,skills:skillsPage,leadership,resume,contact,trash:trashPage};
+function render(page,projectId){if(!pages[page])page='home';currentPage=page;const wasHidden=win.classList.contains('hidden');win.classList.remove('hidden');const project=page==='projects'&&projects.find(p=>p.id===projectId);content.innerHTML=project?detail(project):renderers[page]();document.getElementById('window-title').textContent=project?`${project.name} — My projects`:page==='home'?'Welcome to my desktop':pages[page];document.getElementById('breadcrumb').textContent=`Dhvani’s MacBook / ${pages[page]}${project?' / '+project.name:''}`;document.querySelectorAll('[data-page]').forEach(e=>{e.classList.toggle('active',e.dataset.page===page);if(e.closest('.sidebar'))e.setAttribute('aria-current',e.dataset.page===page?'page':'false');});content.scrollTop=0;animateContent();if(wasHidden)animateOpen();updateTrash();}
+function navigate(page,projectId){closeMenu();windowMotionId++;windowAnimation?.cancel();document.body.classList.remove('desktop-visible');const hash=page==='projects'&&projectId?`projects/${projectId}`:page;if(location.hash.slice(1)===hash)render(page,projectId);else location.hash=hash;}
 function fromHash(){const [page,id]=location.hash.slice(1).split('/');render(page||'home',id);}
 document.addEventListener('click',async e=>{const page=e.target.closest('[data-page]');if(page){navigate(page.dataset.page);return;}const p=e.target.closest('[data-project]');if(p){navigate('projects',p.dataset.project);return;}const f=e.target.closest('[data-filter]');if(f){projectFilter=f.dataset.filter;render('projects');return;}if(e.target.closest('#copy-email')){try{await navigator.clipboard.writeText(EMAIL);toast('Email copied. Say hello anytime!');}catch{toast(`Email: ${EMAIL}`);}}});
 function toast(message){const el=document.getElementById('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3500);}
-document.getElementById('close-window').onclick=()=>{win.classList.add('hidden');toast('Click any desktop shortcut or dock icon to open a window.');};document.getElementById('minimize-window').onclick=()=>{win.classList.add('hidden');toast('Window minimized. Click the dock to bring it back.');};document.getElementById('maximize-window').onclick=()=>win.classList.toggle('maximized');
-const handle=document.getElementById('drag-handle');handle.addEventListener('dblclick',e=>{if(!e.target.closest('button'))win.classList.toggle('maximized');});handle.addEventListener('pointerdown',e=>{if(e.target.closest('button')||innerWidth<=800||win.classList.contains('maximized'))return;const rect=win.getBoundingClientRect(),desktop=document.getElementById('desktop').getBoundingClientRect();const dx=e.clientX-rect.left,dy=e.clientY-rect.top;handle.setPointerCapture(e.pointerId);const move=ev=>{win.style.left=Math.max(0,Math.min(innerWidth-100,ev.clientX-dx))+'px';win.style.top=Math.max(0,Math.min(innerHeight-150,ev.clientY-dy-desktop.top))+'px';};const up=()=>{handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',up);handle.removeEventListener('pointercancel',up);};handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',up);handle.addEventListener('pointercancel',up);});
+document.getElementById('close-window').onclick=()=>hideWindow('close');
+document.getElementById('minimize-window').onclick=()=>hideWindow('minimize');
+document.getElementById('maximize-window').onclick=toggleMaximize;
+const handle=document.getElementById('drag-handle');handle.addEventListener('dblclick',e=>{if(!e.target.closest('button'))toggleMaximize();});handle.addEventListener('pointerdown',e=>{if(e.target.closest('button')||innerWidth<=800||win.classList.contains('maximized'))return;const rect=win.getBoundingClientRect(),desktop=document.getElementById('desktop').getBoundingClientRect();const dx=e.clientX-rect.left,dy=e.clientY-rect.top;handle.setPointerCapture(e.pointerId);const move=ev=>{win.style.left=Math.max(0,Math.min(innerWidth-rect.width,ev.clientX-dx))+'px';win.style.top=Math.max(0,Math.min(innerHeight-150,ev.clientY-dy-desktop.top))+'px';};const up=()=>{handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',up);handle.removeEventListener('pointercancel',up);};handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',up);handle.addEventListener('pointercancel',up);});
 const dialog=document.getElementById('search-dialog'),searchInput=document.getElementById('search-input'),results=document.getElementById('search-results');
 function search(){const q=searchInput.value.trim().toLowerCase();const found=[...Object.entries(pages).map(([id,name])=>({name,type:'Page',text:id+' '+name,action:()=>navigate(id)})),...projects.map(p=>({name:p.name,type:p.category,text:[p.name,p.subtitle,p.description,...p.stack].join(' '),action:()=>navigate('projects',p.id)}))].filter(item=>item.text.toLowerCase().includes(q)).slice(0,q?18:7);results.replaceChildren();if(!found.length){const p=document.createElement('p');p.className='empty';p.textContent='No files found. Try “AI”, “Kotlin”, or “resume”.';results.append(p);}found.forEach(item=>{const b=document.createElement('button');b.className='search-result';const span=document.createElement('span');span.textContent=item.name;const small=document.createElement('small');small.textContent=item.type+' ↗';b.append(span,small);b.onclick=()=>{dialog.close();item.action();};results.append(b);});}
 function openSearch(){dialog.showModal();searchInput.value='';search();searchInput.focus();}['search-open','window-search','dock-search'].forEach(id=>document.getElementById(id).onclick=openSearch);document.getElementById('search-close').onclick=()=>dialog.close();searchInput.oninput=search;searchInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();results.querySelector('button')?.click();}if(e.key==='ArrowDown'){e.preventDefault();results.querySelector('button')?.focus();}});results.addEventListener('keydown',e=>{const buttons=[...results.querySelectorAll('button')],i=buttons.indexOf(document.activeElement);if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();buttons[(i+(e.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length]?.focus();}});dialog.addEventListener('click',e=>{if(e.target===dialog&&e.offsetY<0)dialog.close();});document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();if(dialog.open)dialog.close();else openSearch();}});
-function tick(){const now=new Date();document.getElementById('clock').textContent=new Intl.DateTimeFormat('en-IN',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(now);document.getElementById('clock').dateTime=now.toISOString();}tick();setInterval(tick,30000);hydrate();window.addEventListener('hashchange',fromHash);fromHash();
+function tick(){const now=new Date();document.getElementById('clock').textContent=new Intl.DateTimeFormat('en-IN',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(now);document.getElementById('clock').dateTime=now.toISOString();}tick();setInterval(tick,30000);hydrate();window.addEventListener('hashchange',fromHash);
+
+/* Desktop motion and reversible, session-only shortcut management. */
+const reduceMotionQuery=matchMedia('(prefers-reduced-motion: reduce)');
+let reducedMotion=reduceMotionQuery.matches,windowAnimation=null,windowMotionId=0;
+const trashItems=[
+ {id:'overthinking',name:'overthinking.txt',text:'A reminder to start before everything feels perfect.'},
+ {id:'final-final',name:'final_final_v7.txt',text:'The first draft is just the beginning. There is always room for one more idea.'},
+ {id:'bugs',name:'a_few_bugs.txt',text:'They were features. Until they weren’t. 🐛'}
+];
+let emptyUndo=[];
+const shortcutLabels={home:'Start here',projects:'My projects',resume:'Dhvani’s resume.pdf',contact:'Let’s connect'};
+function motionAllowed(){return !reducedMotion;}
+function animateContent(){if(!motionAllowed())return;content.animate([{opacity:0,transform:'translateY(9px)'},{opacity:1,transform:'translateY(0)'}],{duration:240,easing:'cubic-bezier(.2,.7,.2,1)'});}
+function animateOpen(){windowMotionId++;windowAnimation?.cancel();if(!motionAllowed())return;windowAnimation=win.animate([{opacity:0,transform:'translateY(24px) scale(.94)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:360,easing:'cubic-bezier(.16,1,.3,1)'});}
+function dockTarget(){return document.querySelector(`.dock [data-page="${currentPage}"]`)||document.querySelector('.dock [data-page="home"]');}
+async function hideWindow(kind){
+ if(win.classList.contains('hidden'))return;
+ const id=++windowMotionId;windowAnimation?.cancel();
+ if(motionAllowed()){
+  const r=win.getBoundingClientRect(),d=dockTarget().getBoundingClientRect();
+  const end=kind==='minimize'?{opacity:0,transform:`translate(${d.left+d.width/2-r.left-r.width/2}px,${d.top-r.top-r.height/2}px) scale(.08,.12)`}:{opacity:0,transform:'translateY(9px) scale(.96)'};
+  windowAnimation=win.animate([{opacity:1,transform:'translate(0,0) scale(1)'},end],{duration:kind==='minimize'?460:180,easing:'cubic-bezier(.4,0,.7,.3)',fill:'forwards'});
+  try{await windowAnimation.finished;}catch{return;}
+ }
+ if(id!==windowMotionId)return;
+ win.classList.add('hidden');windowAnimation?.cancel();document.body.classList.add('desktop-visible');
+ document.querySelector('.dock [data-page="home"]').focus({preventScroll:true});
+ toast(kind==='minimize'?'Minimized to the dock. Click an app to restore.':'Finder closed. Open any desktop shortcut to return.');
+}
+function toggleMaximize(){
+ if(win.classList.contains('hidden'))return;
+ const before=win.getBoundingClientRect();win.classList.toggle('maximized');
+ const after=win.getBoundingClientRect();
+ if(motionAllowed())win.animate([{transform:`translate(${before.left-after.left}px,${before.top-after.top}px) scale(${before.width/after.width},${before.height/after.height})`},{transform:'translate(0,0) scale(1)'}],{duration:360,easing:'cubic-bezier(.16,1,.3,1)'});
+}
+const dock=document.querySelector('.dock');
+dock.addEventListener('pointermove',e=>{
+ if(!motionAllowed()||e.pointerType==='touch')return;
+ dock.querySelectorAll(':scope > button').forEach(button=>{const r=button.getBoundingClientRect(),distance=Math.abs(e.clientX-r.left-r.width/2),amount=Math.max(0,1-distance/110);button.style.setProperty('--dock-scale',1+amount*.45);button.style.setProperty('--dock-lift',`${amount*-12}px`);});
+});
+dock.addEventListener('pointerleave',()=>dock.querySelectorAll(':scope > button').forEach(b=>{b.style.removeProperty('--dock-scale');b.style.removeProperty('--dock-lift');}));
+document.addEventListener('click',e=>{
+ 
+ const app=e.target.closest('.dock>button');if(app&&motionAllowed())app.querySelector('.app-icon').animate([{transform:'translateY(0)'},{transform:'translateY(-18px)',offset:.35},{transform:'translateY(0)',offset:.65},{transform:'translateY(-6px)',offset:.8},{transform:'translateY(0)'}],{duration:560,easing:'ease-out'});
+});
+function updateTrash(){
+ document.querySelectorAll('[data-trash-icon]').forEach(el=>el.innerHTML=nativeIcon(trashItems.length?'trash-full':'trash'));
+ document.querySelectorAll('[data-trash-count]').forEach(el=>el.textContent=trashItems.length||'');
+ document.getElementById('trash-count').textContent=trashItems.length?`${trashItems.length} items`:'Empty';
+}
+function trashPage(){return title('A LITTLE ROOM FOR IMPERFECTION','Even ideas need a recycle bin.','A playful corner for discarded drafts and desktop shortcuts. Everything here lives only in this browser tab.')+`<div class="trash-toolbar"><span>${trashItems.length} ${trashItems.length===1?'item':'items'}</span><div><button class="btn" data-action="restore-all" ${trashItems.length?'':'disabled'}>Put everything back ↗</button> <button class="btn" data-action="empty-trash" ${trashItems.length?'':'disabled'}>Empty Trash</button></div></div>${emptyUndo.length?'<div class="trash-undo">Trash emptied. Changed your mind? <button data-action="undo-empty">Undo</button></div>':''}${trashItems.length?`<div class="trash-grid">${trashItems.map(item=>`<article class="trash-item">${nativeIcon(item.shortcut?'folder':'document')}<h2>${item.name}</h2><p>${item.shortcut?'Desktop shortcut · your content stays in Finder':item.text}</p><button class="btn" data-restore="${item.id}">Put back ↗</button></article>`).join('')}</div>`:`<div class="trash-empty">${nativeIcon('trash')}<h2>A fresh start.</h2><p>Drag a desktop shortcut onto the bin to try it.<br>Or use “Move to Trash” in its right-click menu.</p></div>`}<p class="trash-note">Just an interactive desktop: no files on your device are changed. Refresh to reset.</p>`;}
+function moveShortcutToTrash(button){
+ const page=button.dataset.page;if(page==='trash'||!shortcutLabels[page])return;
+ if(!trashItems.some(item=>item.id===`shortcut-${page}`))trashItems.push({id:`shortcut-${page}`,name:shortcutLabels[page],shortcut:page});
+ button.hidden=true;button.style.left='';button.style.top='';button.style.position='';button.style.transform='';
+ updateTrash();if(currentPage==='trash'&&!win.classList.contains('hidden'))render('trash');
+ toast(`${shortcutLabels[page]} moved to Trash. You can put it back anytime.`);
+ if(motionAllowed())document.querySelector('.desktop-trash').animate([{transform:'rotate(0)'},{transform:'rotate(-9deg)'},{transform:'rotate(9deg)'},{transform:'rotate(0)'}],{duration:350});
+}
+function restoreTrashItem(id){
+ const index=trashItems.findIndex(item=>item.id===id);if(index<0)return;
+ const [item]=trashItems.splice(index,1);
+ if(item.shortcut){const shortcut=document.querySelector(`.desktop-files [data-page="${item.shortcut}"]`);shortcut.hidden=false;shortcut.classList.remove('is-dragging');}
+ else addRestoredNote(item);
+ updateTrash();toast(`${item.name} put back on the desktop.`);
+}
+function addRestoredNote(item){
+ const note=document.createElement('button');note.className='restored-note desktop-file';note.dataset.noteId=item.id;note.dataset.noteText=item.text;note.innerHTML=`${nativeIcon('document')}<b>${item.name}</b>`;note.style.top=`${185+document.querySelectorAll('.restored-note').length*100}px`;
+ note.addEventListener('click',()=>toast(item.text));document.getElementById('desktop').append(note);attachDesktopDrag(note);
+}
+const menu=document.getElementById('desktop-menu');let contextShortcut=null;
+function closeMenu(){menu.hidden=true;}
+document.getElementById('desktop').addEventListener('contextmenu',e=>{
+ if(e.target.closest('.window,a,input,textarea'))return;
+ e.preventDefault();contextShortcut=e.target.closest('.desktop-files .desktop-file');
+ menu.querySelector('[data-action="trash-shortcut"]')?.remove();
+ if(contextShortcut){const b=document.createElement('button');b.setAttribute('role','menuitem');b.dataset.action='trash-shortcut';b.textContent='Move to Trash';menu.append(b);}
+ menu.hidden=false;menu.style.left=Math.min(e.clientX,innerWidth-242)+'px';menu.style.top=Math.min(e.clientY,innerHeight-menu.offsetHeight-12)+'px';menu.querySelector('button').focus();
+});
+menu.addEventListener('keydown',e=>{const items=[...menu.querySelectorAll('button')],i=items.indexOf(document.activeElement);if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();items[(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length].focus();}});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#desktop-menu'))closeMenu();});
+document.addEventListener('click',e=>{
+ const restore=e.target.closest('[data-restore]');if(restore){restoreTrashItem(restore.dataset.restore);render('trash');return;}
+ const action=e.target.closest('[data-action]')?.dataset.action;if(!action)return;
+ closeMenu();
+ if(action==='show-desktop')hideWindow('minimize');
+ if(action==='tidy'){document.querySelectorAll('.desktop-files .desktop-file,.restored-note').forEach(b=>{b.style.left='';b.style.top='';b.style.position='';b.style.transform='';});document.querySelectorAll('.restored-note').forEach((note,i)=>{note.style.top=`${185+i*100}px`;});toast('Desktop shortcuts tidied up.');}
+ if(action==='motion'){reducedMotion=!reducedMotion;document.body.classList.toggle('reduced-motion',reducedMotion);document.getElementById('motion-state').textContent=reducedMotion?'On':'Off';toast(reducedMotion?'Reduced motion is on.':'Desktop animations are on.');}
+ if(action==='trash-shortcut'&&contextShortcut)moveShortcutToTrash(contextShortcut);
+ if(action==='restore-all'){[...trashItems].forEach(item=>restoreTrashItem(item.id));render('trash');}
+ if(action==='empty-trash'){emptyUndo=trashItems.splice(0);updateTrash();render('trash');toast('Trash emptied. Use Undo to bring the items back.');}
+ if(action==='undo-empty'){trashItems.push(...emptyUndo);emptyUndo=[];updateTrash();render('trash');}
+});
+function attachDesktopDrag(button){
+ button.addEventListener('pointerdown',e=>{
+  if(e.button!==0||e.target.closest('a')||button.classList.contains('desktop-trash'))return;
+  const rect=button.getBoundingClientRect();const x=e.clientX,y=e.clientY;let dragging=false;
+  const move=ev=>{
+   if(!dragging&&Math.hypot(ev.clientX-x,ev.clientY-y)<7)return;
+   if(!dragging){dragging=true;button.setPointerCapture(e.pointerId);button.classList.add('is-dragging');}
+   button.style.position='fixed';button.style.left=Math.max(0,Math.min(innerWidth-rect.width,rect.left+ev.clientX-x))+'px';button.style.top=Math.max(40,Math.min(innerHeight-90,rect.top+ev.clientY-y))+'px';
+   const bin=document.querySelector('.desktop-trash').getBoundingClientRect();document.querySelector('.desktop-trash').classList.toggle('drop-ready',ev.clientX>=bin.left&&ev.clientX<=bin.right&&ev.clientY>=bin.top&&ev.clientY<=bin.bottom);
+  };
+  const finish=ev=>{
+   button.removeEventListener('pointermove',move);button.removeEventListener('pointerup',finish);button.removeEventListener('pointercancel',cancel);button.classList.remove('is-dragging');
+   const bin=document.querySelector('.desktop-trash');const dropped=bin.classList.contains('drop-ready');bin.classList.remove('drop-ready');
+   if(!dragging)return;
+   button.addEventListener('click',blockClick,{capture:true,once:true});setTimeout(()=>button.removeEventListener('click',blockClick,true),0);
+   if(dropped){if(button.dataset.noteId){const item={id:button.dataset.noteId,name:button.querySelector('b').textContent,text:button.dataset.noteText};trashItems.push(item);button.remove();updateTrash();if(currentPage==='trash')render('trash');}else moveShortcutToTrash(button);}
+  };
+  const cancel=()=>{button.removeEventListener('pointermove',move);button.removeEventListener('pointerup',finish);button.removeEventListener('pointercancel',cancel);button.classList.remove('is-dragging');document.querySelector('.desktop-trash').classList.remove('drop-ready');};
+  function blockClick(ev){ev.preventDefault();ev.stopImmediatePropagation();}
+  button.addEventListener('pointermove',move);button.addEventListener('pointerup',finish);button.addEventListener('pointercancel',cancel);
+ });
+ button.addEventListener('keydown',e=>{if((e.key==='Delete'||e.key==='Backspace')&&button.dataset.page){e.preventDefault();moveShortcutToTrash(button);}});
+}
+document.querySelectorAll('.desktop-files .desktop-file').forEach(attachDesktopDrag);
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){const menuWasOpen=!menu.hidden;closeMenu();if(menuWasOpen)return;if(!dialog.open&&!win.classList.contains('hidden')&&!e.target.closest('input,textarea'))hideWindow('minimize');}
+});
+reduceMotionQuery.addEventListener('change',e=>{reducedMotion=e.matches;document.body.classList.toggle('reduced-motion',reducedMotion);document.getElementById('motion-state').textContent=reducedMotion?'On':'Off';});
+document.body.classList.toggle('reduced-motion',reducedMotion);document.getElementById('motion-state').textContent=reducedMotion?'On':'Off';
+updateTrash();fromHash();animateOpen();

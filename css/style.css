@@ -19,3 +19,59 @@
 .quick-card>.mac-icon{width:34px;height:34px;margin-bottom:12px}
 @media(max-width:800px){.desktop-icon{width:38px;height:38px;margin:0}.desktop-icon>.mac-icon,.desktop-icon>.mac-document{width:38px;height:38px}.desktop-icon .pdf-badge{font-size:5px;padding:1px 3px}.dock .app-icon>.mac-icon{width:43px;height:43px}.quick-card>.mac-icon{width:31px;height:31px;grid-row:span 2;margin:0}}
 @media(max-width:480px){.dock .app-icon>.mac-icon{width:40px;height:40px}.sidebar button .mac-icon,.sidebar button .mac-document{width:20px;height:20px}}
+/* A desktop that moves and responds like a desktop. */
+[hidden]{display:none!important}
+body{overflow:hidden}
+.window{transform-origin:center;will-change:transform;transition:none}
+.titlebar{user-select:none}
+.sidebar{overflow-y:auto;scrollbar-width:thin}
+.sidebar-bottom{flex-shrink:0}
+.dock{max-width:calc(100vw - 28px);gap:13px;padding-left:17px;padding-right:17px}
+.dock>button{transform:translateY(var(--dock-lift,0px)) scale(var(--dock-scale,1));transform-origin:center bottom;transition:transform .15s cubic-bezier(.2,.8,.2,1);flex-shrink:0}
+.dock>button:hover{transform:translateY(var(--dock-lift,-6px)) scale(var(--dock-scale,1.15))}
+.dock>button:focus-visible{transform:translateY(-6px) scale(1.12)}
+.desktop-heading{animation:desktop-arrive .85s cubic-bezier(.2,.8,.2,1) both}
+.desktop-files>.desktop-file{animation:desktop-arrive .7s cubic-bezier(.2,.8,.2,1) both}
+.desktop-files>.desktop-file:nth-child(2){animation-delay:.07s}.desktop-files>.desktop-file:nth-child(3){animation-delay:.14s}.desktop-files>.desktop-file:nth-child(4){animation-delay:.21s}
+@keyframes desktop-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.desktop-files .desktop-file{touch-action:none;user-select:none;-webkit-user-select:none}
+.desktop-file.is-dragging{z-index:50!important;background:#dceeff9c!important;animation:none!important;cursor:grabbing;box-shadow:0 8px 22px #34557124;backdrop-filter:blur(8px)}
+.desktop-file.is-dragging .mac-icon{transform:scale(1.06) rotate(-4deg)}
+.desktop-trash{position:fixed;right:27px;bottom:105px;width:135px;z-index:6;transition:background .2s,box-shadow .2s,transform .2s}
+.desktop-trash.drop-ready{background:#eef8ffe3;box-shadow:0 0 0 3px #6498b8;transform:scale(1.09)}
+.desktop-trash .desktop-icon{width:70px;height:70px}
+.desktop-trash .mac-icon{width:70px;height:70px}
+.desktop-trash small{min-height:12px}
+.restored-note{position:absolute;left:25px;width:95px;z-index:7;touch-action:none;user-select:none}
+.restored-note>.mac-icon{width:48px;height:48px;margin:0 auto 5px;filter:drop-shadow(0 3px 3px #244e7428)}
+.restored-note b{font-size:10px;overflow-wrap:anywhere}
+.desktop-menu{position:fixed;width:230px;padding:7px;border:1px solid #fff9;border-radius:10px;background:#f4f8fbed;backdrop-filter:blur(30px);box-shadow:0 10px 40px #2a465a36;z-index:60;animation:menu-in .12s ease-out}
+.menu-caption{display:block;padding:7px 10px 9px;color:#8795a0;font-size:10px}
+.desktop-menu button{display:flex;justify-content:space-between;align-items:center;width:100%;border-radius:5px;padding:8px 10px;text-align:left;font-size:12px}
+.desktop-menu button:hover,.desktop-menu button:focus{background:#4b87ba;color:white;outline:none}
+.desktop-menu kbd,.desktop-menu #motion-state{font-size:10px;opacity:.65}
+.desktop-menu hr{border:0;border-top:1px solid #dce3e8;margin:5px 6px}
+@keyframes menu-in{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.trash-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:20px;font-size:11px;color:#84939e}
+.trash-toolbar .btn{font-size:10px;padding:8px 10px}
+.btn:disabled{opacity:.4;cursor:default;pointer-events:none}
+.trash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.trash-item{padding:20px;border:1px solid #e1e7ec;border-radius:9px;background:#f6f9fb;animation:desktop-arrive .3s both}
+.trash-item>.mac-icon{width:47px;height:47px;margin-bottom:15px}
+.trash-item h2{font-size:12px;margin:0 0 9px;overflow-wrap:anywhere}
+.trash-item p{font-size:11px;line-height:1.7;color:#84939f;margin-bottom:18px}
+.trash-item .btn{font-size:10px;padding:7px 10px}
+.trash-empty{text-align:center;padding:25px 0}
+.trash-empty>.mac-icon{width:100px;height:100px;margin:0 auto 20px}
+.trash-empty h2{font:26px Georgia,serif;font-weight:400;margin:0 0 12px}
+.trash-empty p,.trash-note{font-size:11px;line-height:1.8;color:#8b99a4}
+.trash-note{margin-top:23px}
+.trash-undo{padding:12px 15px;border-radius:6px;background:#e8f1f7;font-size:11px;margin-bottom:17px}
+.trash-undo button{color:#3579aa;text-decoration:underline}
+body.reduced-motion *,body.reduced-motion *:before,body.reduced-motion *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+body.reduced-motion .dock>button{transform:none!important}
+@media(max-height:860px) and (min-width:801px){.desktop-files{gap:10px;top:25px}.desktop-trash{bottom:93px}.desktop-trash .desktop-icon,.desktop-trash .mac-icon{width:54px;height:54px}.desktop-trash small{display:none}}
+@media(max-width:800px){.desktop-trash{right:12px;bottom:94px;width:64px;padding:4px}.desktop-trash .desktop-icon,.desktop-trash .mac-icon{width:37px;height:37px}.desktop-trash b{font-size:9px}.desktop-trash small{font-size:8px;display:none}.dock{gap:8px;padding:8px 10px 11px}.dock i{margin:0}.dock .app-icon{width:34px;height:34px}.dock .app-icon>.mac-icon{width:39px;height:39px}.trash-toolbar{align-items:flex-start;flex-direction:column}.trash-grid{grid-template-columns:1fr}.sidebar{padding-top:14px}.sidebar>button{padding-top:8px;padding-bottom:8px}.desktop-files{gap:6px}}
+@media(max-width:390px){.dock{gap:5px}.dock .app-icon{width:31px;height:31px}.dock .app-icon>.mac-icon{width:36px;height:36px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+.desktop-trash,.restored-note{z-index:4}

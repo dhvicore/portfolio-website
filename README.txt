@@ -20,3 +20,16 @@ No project demo URLs or individual repository URLs have been guessed.
 
 To deploy on GitHub Pages, upload index.html, css/, js/, and assets/ together.
 Use the repository's existing Pages configuration.
+
+INTERACTIVE DESKTOP
+-------------------
+Drag desktop shortcuts to rearrange them or drop them on Trash.
+Right-click a shortcut for Move to Trash. Delete/Backspace also works
+when a shortcut is focused. Put back items from Trash or empty and Undo.
+Trash is session-only and never changes files on the visitor’s device.
+Right-click the wallpaper to show desktop, clean up, or reduce motion.
+Escape shows desktop; Command/Ctrl + K searches.
+System reduced-motion preferences are respected.
+
+Live site: https://dhvicore.github.io/portfolio-website/
+Repository: https://github.com/dhvicore/portfolio-website
