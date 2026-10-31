@@ -75,3 +75,10 @@ body.reduced-motion .dock>button{transform:none!important}
 @media(max-width:390px){.dock{gap:5px}.dock .app-icon{width:31px;height:31px}.dock .app-icon>.mac-icon{width:36px;height:36px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 .desktop-trash,.restored-note{z-index:4}
+/* Give magnified dock icons room to breathe on desktop. */
+@media(min-width:801px){
+ .dock{gap:24px;padding:12px 22px 16px;border-radius:23px}
+ .dock .app-icon{width:52px;height:52px}
+ .dock i{margin:0 4px}
+ .dock .tooltip{bottom:68px}
+}
