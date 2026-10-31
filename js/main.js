@@ -65,11 +65,7 @@ function tick(){const now=new Date();document.getElementById('clock').textConten
 /* Desktop motion and reversible, session-only shortcut management. */
 const reduceMotionQuery=matchMedia('(prefers-reduced-motion: reduce)');
 let reducedMotion=reduceMotionQuery.matches,windowAnimation=null,windowMotionId=0;
-const trashItems=[
- {id:'overthinking',name:'overthinking.txt',text:'A reminder to start before everything feels perfect.'},
- {id:'final-final',name:'final_final_v7.txt',text:'The first draft is just the beginning. There is always room for one more idea.'},
- {id:'bugs',name:'a_few_bugs.txt',text:'They were features. Until they weren’t. 🐛'}
-];
+const trashItems=[];
 let emptyUndo=[];
 const shortcutLabels={home:'Start here',projects:'My projects',resume:'Dhvani’s resume.pdf',contact:'Let’s connect'};
 function motionAllowed(){return !reducedMotion;}
